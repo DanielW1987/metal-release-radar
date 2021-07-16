@@ -195,4 +195,54 @@ class ReleaseCollectorTest implements WithAssertions {
     // then
     verify(releaseService).findReleases(any(), any(), any(), eq(expectedPageRequest));
   }
+
+  @Test
+  @DisplayName("collectReleases: returns empty list if artists are empty")
+  void test_collect_releases_returns_empty_list() {
+    // when
+    var result = underTest.collectReleases(Collections.emptyList(), new TimeRange());
+
+    // then
+    assertThat(result).isEmpty();
+  }
+
+  @Test
+  @DisplayName("collectReleases: releaseService is not called if artists are empty")
+  void test_collect_releases_not_calling_release_service() {
+    // when
+    underTest.collectReleases(Collections.emptyList(), new TimeRange());
+
+    // then
+    verifyNoInteractions(releaseService);
+  }
+
+  @Test
+  @DisplayName("collectReleases: releaseService is called with artist names and time range")
+  void test_collect_releases_called_correctly() {
+    // given
+    var timeRange = new TimeRange(LocalDate.now(), LocalDate.now());
+    var artist = ArtistDtoFactory.withName("a");
+    var expectedArtistNames = List.of("a");
+
+    // when
+    underTest.collectReleases(List.of(artist), timeRange);
+
+    // then
+    verify(releaseService).findAllReleases(expectedArtistNames, timeRange);
+  }
+
+  @Test
+  @DisplayName("collectReleases: returns releaseDtos")
+  void test_collect_releases_returns_dtos() {
+    // given
+    var releases = List.of(ReleaseDtoFactory.createDefault());
+    var artist = ArtistDtoFactory.createDefault();
+    doReturn(releases).when(releaseService).findAllReleases(any(), any());
+
+    // when
+    var result = underTest.collectReleases(List.of(artist), new TimeRange());
+
+    // then
+    assertThat(result).containsAll(releases);
+  }
 }

@@ -22,10 +22,10 @@ public interface ArtistRepository extends JpaRepository<ArtistEntity, Long> {
                  "a.image_xs as imageXs, a.image_s as imageS, a.image_m as imageM, a.image_l as imageL " +
                  "from follow_actions as fa left join artists as a on a.id = fa.artist_id " +
                  "group by a.artist_name, a.external_id, a.source, a.image_xs, a.image_s, a.image_m, a.image_l " +
-                 "order by count(a.id) desc " +
-                 "limit :limit",
+                 "having count(a.id) >= :minFollower " +
+                 "order by count(a.id) desc",
          nativeQuery = true)
-  List<TopArtist> findTopArtists(@Param("limit") int limit);
+  List<TopArtist> findTopArtists(@Param("minFollower") int minFollower);
 
   @Query(value = "select count(a.external_id) " +
                  "from follow_actions fa left join artists a on a.id = fa.artist_id " +

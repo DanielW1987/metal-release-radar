@@ -4,6 +4,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import rocks.metaldetector.butler.facade.dto.ReleaseDto;
 import rocks.metaldetector.service.artist.ArtistDto;
+import rocks.metaldetector.support.TimeRange;
 import rocks.metaldetector.web.api.response.SummaryResponse;
 
 import java.time.LocalDate;
@@ -32,6 +33,11 @@ public class SummaryServiceMock implements SummaryService {
         .recentlyFollowedArtists(recentlyFollowedArtists)
         .favoriteCommunityArtists(recentlyFollowedArtists)
         .build();
+  }
+
+  @Override
+  public List<ReleaseDto> findTopReleases(TimeRange timeRange, int minFollower, int maxReleases) {
+    return List.of(ReleaseDto.builder().albumTitle("Sons of Northern Darkness").artist("Immortal").releaseDate(LocalDate.now()).build());
   }
 
   private List<ReleaseDto> createUpcomingReleases(LocalDate now) {

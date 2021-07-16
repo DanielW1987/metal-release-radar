@@ -17,10 +17,10 @@ public class ReleasesRequest implements WithTimeRangeValidation {
 
   @Nullable
   @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-  private LocalDate dateFrom;
+  protected LocalDate dateFrom;
 
   @Nullable
   @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-  private LocalDate dateTo;
+  protected LocalDate dateTo;
 
 }

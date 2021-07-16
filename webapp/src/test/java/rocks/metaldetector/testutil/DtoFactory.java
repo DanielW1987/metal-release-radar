@@ -16,6 +16,7 @@ import rocks.metaldetector.web.api.request.ChangePasswordRequest;
 import rocks.metaldetector.web.api.request.PaginatedReleasesRequest;
 import rocks.metaldetector.web.api.request.RegisterUserRequest;
 import rocks.metaldetector.web.api.request.ReleasesRequest;
+import rocks.metaldetector.web.api.request.TopReleasesRequest;
 import rocks.metaldetector.web.api.request.UpdateUserRequest;
 import rocks.metaldetector.web.api.response.ArtistSearchResponse;
 import rocks.metaldetector.web.api.response.ArtistSearchResponseEntryDto;
@@ -144,6 +145,17 @@ public class DtoFactory {
           .dateFrom(LocalDate.now())
           .dateTo(LocalDate.now().plusDays(30))
           .build();
+    }
+  }
+
+  public static class TopReleasesRequestFactory {
+
+    public static TopReleasesRequest createDefault() {
+      LocalDate now = LocalDate.now();
+      TopReleasesRequest request = new TopReleasesRequest(10, 2);
+      request.setDateFrom(now);
+      request.setDateTo(now.plusDays(7));
+      return request;
     }
   }
 

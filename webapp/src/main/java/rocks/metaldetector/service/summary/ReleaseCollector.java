@@ -30,17 +30,26 @@ public class ReleaseCollector {
     LocalDate tomorrow = LocalDate.now().plusDays(1);
     TimeRange timeRange = new TimeRange(tomorrow, tomorrow.plusMonths(TIME_RANGE_MONTHS));
     DetectorSort sort = new DetectorSort("releaseDate", ASC);
-    return collectReleases(artists, timeRange, sort);
+    return collectPaginatedReleases(artists, timeRange, sort);
   }
 
   public List<ReleaseDto> collectRecentReleases(List<ArtistDto> artists) {
     LocalDate now = LocalDate.now();
     TimeRange timeRange = new TimeRange(now.minusMonths(TIME_RANGE_MONTHS), now);
     DetectorSort sort = new DetectorSort("releaseDate", DESC);
-    return collectReleases(artists, timeRange, sort);
+    return collectPaginatedReleases(artists, timeRange, sort);
   }
 
-  private List<ReleaseDto> collectReleases(List<ArtistDto> artists, TimeRange timeRange, DetectorSort sort) {
+  public List<ReleaseDto> collectReleases(List<ArtistDto> artists, TimeRange timeRange) {
+    if (artists.isEmpty()) {
+      return Collections.emptyList();
+    }
+
+    List<String> artistNames = artists.stream().map(ArtistDto::getArtistName).collect(Collectors.toList());
+    return releaseService.findAllReleases(artistNames, timeRange);
+  }
+
+  private List<ReleaseDto> collectPaginatedReleases(List<ArtistDto> artists, TimeRange timeRange, DetectorSort sort) {
     if (artists.isEmpty()) {
       return Collections.emptyList();
     }

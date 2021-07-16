@@ -145,7 +145,8 @@ class ArtistRepositoryIT extends BaseDataJpaTest implements WithAssertions {
   @DisplayName("findTopArtists() finds the most followed artists in the correct order")
   void test_find_top_artists() {
     // given
-    int limit = 2;
+    int minFollower = 2;
+    int expectedSize = 2;
     follow(userA, artist1);
     follow(userA, artist2);
     follow(userA, artist3);
@@ -154,10 +155,10 @@ class ArtistRepositoryIT extends BaseDataJpaTest implements WithAssertions {
     follow(userC, artist3);
 
     // when
-    var result = underTest.findTopArtists(limit);
+    var result = underTest.findTopArtists(minFollower);
 
     // then
-    assertThat(result).hasSize(limit);
+    assertThat(result).hasSize(expectedSize);
     assertThat(result.get(0).getArtistName()).isEqualTo(artist3.getArtistName());
     assertThat(result.get(0).getImageXs()).isEqualTo(artist3.getImageXs());
     assertThat(result.get(0).getImageS()).isEqualTo(artist3.getImageS());

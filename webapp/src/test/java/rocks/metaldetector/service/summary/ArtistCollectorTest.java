@@ -64,11 +64,14 @@ class ArtistCollectorTest implements WithAssertions {
   @Test
   @DisplayName("collectTopFollowedArtists: artistRepository is called to get top artists")
   void test_artist_repository_is_called_for_top_artists() {
+    // given
+    var minFollower = 10;
+
     // when
-    underTest.collectTopFollowedArtists();
+    underTest.collectTopFollowedArtists(minFollower);
 
     // then
-    verify(artistRepository).findTopArtists(RESULT_LIMIT);
+    verify(artistRepository).findTopArtists(minFollower);
   }
 
   @Test
@@ -81,7 +84,7 @@ class ArtistCollectorTest implements WithAssertions {
     doReturn(artistDto).when(artistDtoTransformer).transformTopArtist(any(TopArtist.class));
 
     // when
-    underTest.collectTopFollowedArtists();
+    underTest.collectTopFollowedArtists(10);
 
     // then
     verify(artistDtoTransformer).transformTopArtist(topArtists.get(0));
@@ -99,7 +102,7 @@ class ArtistCollectorTest implements WithAssertions {
     doReturn(expectedArtistDtos.get(1)).when(artistDtoTransformer).transformTopArtist(artistEntities.get(1));
 
     // when
-    var result = underTest.collectTopFollowedArtists();
+    var result = underTest.collectTopFollowedArtists(10);
 
     // then
     assertThat(result).isEqualTo(expectedArtistDtos);
@@ -112,7 +115,7 @@ class ArtistCollectorTest implements WithAssertions {
     doReturn(userEntity).when(currentUserSupplier).get();
 
     // when
-    underTest.collectRecentlyFollowedArtists();
+    underTest.collectRecentlyFollowedArtists(RESULT_LIMIT);
 
     // then
     verify(currentUserSupplier).get();
@@ -125,7 +128,7 @@ class ArtistCollectorTest implements WithAssertions {
     doReturn(userEntity).when(currentUserSupplier).get();
 
     // when
-    underTest.collectRecentlyFollowedArtists();
+    underTest.collectRecentlyFollowedArtists(RESULT_LIMIT);
 
     // then
     verify(followActionRepository).findAllByUser(userEntity);
@@ -144,7 +147,7 @@ class ArtistCollectorTest implements WithAssertions {
     doReturn(followActionEntities).when(followActionRepository).findAllByUser(any());
 
     // when
-    underTest.collectRecentlyFollowedArtists();
+    underTest.collectRecentlyFollowedArtists(RESULT_LIMIT);
 
     // then
     verify(artistDtoTransformer).transformFollowActionEntity(userFollowsArtist1);
@@ -166,7 +169,7 @@ class ArtistCollectorTest implements WithAssertions {
     InOrder inOrder = inOrder(artistDtoTransformer);
 
     // when
-    underTest.collectRecentlyFollowedArtists();
+    underTest.collectRecentlyFollowedArtists(RESULT_LIMIT);
 
     // then
     inOrder.verify(artistDtoTransformer).transformFollowActionEntity(userFollowsArtist2);
@@ -185,7 +188,7 @@ class ArtistCollectorTest implements WithAssertions {
     doReturn(followActionEntities).when(followActionRepository).findAllByUser(any());
 
     // when
-    var result = underTest.collectRecentlyFollowedArtists();
+    var result = underTest.collectRecentlyFollowedArtists(RESULT_LIMIT);
 
     // then
     assertThat(result).hasSize(RESULT_LIMIT);
@@ -202,7 +205,7 @@ class ArtistCollectorTest implements WithAssertions {
     doReturn(expectedArtist).when(artistDtoTransformer).transformFollowActionEntity(followAction);
 
     // when
-    var result = underTest.collectRecentlyFollowedArtists();
+    var result = underTest.collectRecentlyFollowedArtists(RESULT_LIMIT);
 
     // then
     assertThat(result).containsExactly(expectedArtist);

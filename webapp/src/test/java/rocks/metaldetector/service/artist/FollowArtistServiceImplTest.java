@@ -18,7 +18,6 @@ import rocks.metaldetector.persistence.domain.artist.ArtistSource;
 import rocks.metaldetector.persistence.domain.artist.FollowActionEntity;
 import rocks.metaldetector.persistence.domain.artist.FollowActionRepository;
 import rocks.metaldetector.persistence.domain.user.UserEntity;
-import rocks.metaldetector.persistence.domain.user.UserRepository;
 import rocks.metaldetector.security.CurrentUserSupplier;
 import rocks.metaldetector.service.artist.transformer.ArtistDtoTransformer;
 import rocks.metaldetector.service.artist.transformer.ArtistEntityTransformer;
@@ -73,9 +72,6 @@ class FollowArtistServiceImplTest implements WithAssertions {
   @Mock
   private SpotifyService spotifyService;
 
-  @Mock
-  private UserRepository userRepository;
-
   @InjectMocks
   private FollowArtistServiceImpl underTest;
 
@@ -84,8 +80,8 @@ class FollowArtistServiceImplTest implements WithAssertions {
 
   @AfterEach
   void tearDown() {
-    reset(artistDtoTransformer, artistEntityTransformer, artistRepository, artistService, userRepository, currentUserSupplier,
-            discogsService, followActionRepository, spotifyService, userRepository, userEntity);
+    reset(artistDtoTransformer, artistEntityTransformer, artistRepository, artistService, currentUserSupplier,
+          discogsService, followActionRepository, spotifyService, userEntity);
   }
 
   @Test
@@ -410,7 +406,6 @@ class FollowArtistServiceImplTest implements WithAssertions {
   void test_artist_service_called_to_find_new_artists() {
     // given
     var artistIds = List.of("a", "b");
-    doReturn(Optional.of(userEntity)).when(userRepository).findByPublicId(any());
 
     // when
     underTest.followSpotifyArtists(artistIds);
@@ -424,7 +419,6 @@ class FollowArtistServiceImplTest implements WithAssertions {
   void test_spotify_service_called() {
     // given
     var newArtistIds = List.of("a", "b");
-    doReturn(Optional.of(userEntity)).when(userRepository).findByPublicId(any());
     doReturn(newArtistIds).when(artistService).findNewArtistIds(any());
 
     // when
@@ -439,7 +433,6 @@ class FollowArtistServiceImplTest implements WithAssertions {
   void test_artist_service_called_to_persist() {
     // given
     var newArtists = List.of(SpotifyArtistDtoFactory.createDefault());
-    doReturn(Optional.of(userEntity)).when(userRepository).findByPublicId(any());
     doReturn(newArtists).when(spotifyService).searchArtistsByIds(any());
 
     // when
@@ -454,7 +447,6 @@ class FollowArtistServiceImplTest implements WithAssertions {
   void test_artist_repository_called() {
     // given
     var artistIds = List.of("a", "b");
-    doReturn(Optional.of(userEntity)).when(userRepository).findByPublicId(any());
 
     // when
     underTest.followSpotifyArtists(artistIds);

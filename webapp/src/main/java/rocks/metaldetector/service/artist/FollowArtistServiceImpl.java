@@ -11,7 +11,6 @@ import rocks.metaldetector.persistence.domain.artist.ArtistSource;
 import rocks.metaldetector.persistence.domain.artist.FollowActionEntity;
 import rocks.metaldetector.persistence.domain.artist.FollowActionRepository;
 import rocks.metaldetector.persistence.domain.user.AbstractUserEntity;
-import rocks.metaldetector.persistence.domain.user.UserRepository;
 import rocks.metaldetector.security.CurrentUserSupplier;
 import rocks.metaldetector.service.artist.transformer.ArtistDtoTransformer;
 import rocks.metaldetector.service.artist.transformer.ArtistEntityTransformer;
@@ -36,7 +35,6 @@ public class FollowArtistServiceImpl implements FollowArtistService {
   private final DiscogsService discogsService;
   private final FollowActionRepository followActionRepository;
   private final SpotifyService spotifyService;
-  private final UserRepository userRepository;
 
   @Override
   @Transactional

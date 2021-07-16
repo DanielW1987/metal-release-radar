@@ -14,8 +14,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static rocks.metaldetector.service.summary.SummaryServiceImpl.RESULT_LIMIT;
-
 @Component
 @AllArgsConstructor
 public class ArtistCollector {
@@ -25,18 +23,18 @@ public class ArtistCollector {
   private final FollowActionRepository followActionRepository;
   private final CurrentUserSupplier currentUserSupplier;
 
-  public List<ArtistDto> collectTopFollowedArtists() {
-    return artistRepository.findTopArtists(RESULT_LIMIT).stream()
+  public List<ArtistDto> collectTopFollowedArtists(int minFollower) {
+    return artistRepository.findTopArtists(minFollower).stream()
         .map(artistDtoTransformer::transformTopArtist)
         .peek(artist -> artist.setFollower(artistRepository.countArtistFollower(artist.getExternalId())))
         .collect(Collectors.toList());
   }
 
-  public List<ArtistDto> collectRecentlyFollowedArtists() {
+  public List<ArtistDto> collectRecentlyFollowedArtists(int resultLimit) {
     AbstractUserEntity currentUser = currentUserSupplier.get();
     return followActionRepository.findAllByUser(currentUser).stream()
         .sorted(Comparator.comparing(FollowActionEntity::getCreatedDateTime).reversed())
-        .limit(RESULT_LIMIT)
+        .limit(resultLimit)
         .map(artistDtoTransformer::transformFollowActionEntity)
         .collect(Collectors.toList());
   }
